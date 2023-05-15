@@ -32,6 +32,7 @@ a <- input %>%
   mutate(Rest=str_replace_all(Rest, pattern="\\s*X\\s*", replacement=" 00 ")) %>% 
   separate(Rest, sep="(?<=[a-zA-Z])\\s*(?=[0-9])", into=c("Rest", "All_codes"), extra="merge") %>% 
   mutate(All_codes=str_squish(All_codes)) %>% 
+  mutate(Rest=str_squish(Rest)) %>%
   separate(All_codes, sep="\\s+", into=c("L","T", "C", "U", "R", "N", "S")) %>% 
   mutate_at(.vars=vars(L:S), 
             .funs=list(~replace(., list=.=="00", values=NA))) %>% 
@@ -46,7 +47,7 @@ a <- input %>%
 main_choro <- c("CircumArtAlp"                            = "CircumArtAlp",
               "Afr"                                       = "Afr$",
               "Appenn-Balcan"                             = "Appenn-Balcan",
-              "Art Alp"                                   = "Art Alp|Art:-Alp|ArtAlp",
+              "Art Alp"                                    = "Art Alp|Art:-Alp|ArtAlp",
               "Avv Naturalizz"             = "Avv Naturalizz|Avv NaturaliZZ",
               "Alpico"                                    = "Alpico",
               "Boreoatl"                                  = "Boreoatl",
@@ -112,7 +113,7 @@ b <- a %>%
 output <- b %>% 
   # separate binomial species names from authors
   separate(Species, sep=" ", into=c("Genus", "Sp", "author"), extra="merge") %>% 
-  unite("SpecieS", Genus, Sp, sep=" ")
+  unite("Species", Genus, Sp, sep=" ")
 
 # export
 write_csv(output, file="Ellenberg_Pignatti_out.csv")
